@@ -32,7 +32,7 @@ void error(const char *msg)
     exit(1);
 }
 
-int port_number = 4444;
+int port_number = 11111;
 
 int main(int argc, char *argv[])
 {
@@ -64,7 +64,7 @@ void* serverIPv6Start(void* arg)
 
    	memset((char *)&sin, 0, sizeof(sin));
    	//sin.sin6_len = sizeof(sin);
-   	sin.sin6_port = htons(6666);
+   	sin.sin6_port = htons(22222);
    	sin.sin6_addr = in6addr_any;
    	sin.sin6_family = AF_INET6;
 
