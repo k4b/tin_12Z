@@ -12,3 +12,16 @@
 	<limits.h>
 	<list>
 
+1357335402 source:/home/michal/Pulpit/TIN-Projekt2/TinServer/main.cpp
+	<stdio.h>
+	<unistd.h>
+	<stdlib.h>
+	<string.h>
+	<sys/types.h>
+	<sys/socket.h>
+	<netinet/in.h>
+	<pthread.h>
+	<iostream>
+	<limits.h>
+	<list>
+
