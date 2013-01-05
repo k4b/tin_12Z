@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1356710394 source:/home/michal/Dokumenty/TIN-Projekt/TinServer/main.cpp
+	<stdio.h>
+	<unistd.h>
+	<stdlib.h>
+	<string.h>
+	<sys/types.h>
+	<sys/socket.h>
+	<netinet/in.h>
+	<pthread.h>
+	<iostream>
+	<limits.h>
+	<list>
+
