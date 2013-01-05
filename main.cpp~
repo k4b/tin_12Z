@@ -32,7 +32,7 @@ void error(const char *msg)
     exit(1);
 }
 
-int port_number = 11111;
+int port_number = 8888;
 
 int main(int argc, char *argv[])
 {
@@ -41,7 +41,10 @@ int main(int argc, char *argv[])
 
 
     //sleep(1000000);
-
+	
+    port_number = atoi(argv[1]);
+    cout << "port: ";
+    cout << port_number << endl;
     int pid;
     pid = fork();
 
@@ -64,7 +67,7 @@ void* serverIPv6Start(void* arg)
 
    	memset((char *)&sin, 0, sizeof(sin));
    	//sin.sin6_len = sizeof(sin);
-   	sin.sin6_port = htons(22222);
+   	sin.sin6_port = htons(6666);
    	sin.sin6_addr = in6addr_any;
    	sin.sin6_family = AF_INET6;
 
@@ -75,21 +78,34 @@ void* serverIPv6Start(void* arg)
    	}
 
    	listen(n, 5);
-   	for (;;)
-   	{
-   	    cout<<"oczekuje na złączenie"<<endl;
-        int g;
+//   	for (;;)
+//   	{
+//   	    cout<<"oczekuje na złączenie"<<endl;
+//        int g;
+//        socklen_t len = sizeof(from);
+//
+//        g = accept(n, (struct sockaddr *) &from, &len);
+//
+//        //cout<<"cos tam złączyłem"<<endl;
+//
+//        //threadsList.push_back(0);
+//        int idWatku;
+//        idWatku = pthread_create(&threads[numThread++], NULL, serveConnection, &g);
+//        printf("idWatku: %d \n", idWatku);
+//   	}
+   	while (true)
+    {
         socklen_t len = sizeof(from);
+        int socket = accept(n, (struct sockaddr *) &from, &len);
 
-        g = accept(n, (struct sockaddr *) &from, &len);
-
-        //cout<<"cos tam złączyłem"<<endl;
-
-        //threadsList.push_back(0);
-        int idWatku;
-        idWatku = pthread_create(&threads[numThread++], NULL, serveConnection, &g);
-        printf("idWatku: %d \n", idWatku);
-   	}
+        if(fork() == 0)
+        {
+            close(n);
+            serveConnection((void *)&socket);
+            exit(0);
+        }
+        close(socket);
+    }
 
    	return NULL;
 }
@@ -144,6 +160,9 @@ void* serverIPv4Start(void* arg)
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
+    int enable_keep_alive = 1;
+    int result = setsockopt(sockfd, SOL_SOCKET, SO_KEEPALIVE, &enable_keep_alive, sizeof(int));
+
     if (sockfd < 0)
         error("ERROR opening socket");
 
@@ -158,14 +177,27 @@ void* serverIPv4Start(void* arg)
 
     listen(sockfd, 20);
     clilen = sizeof(cli_addr);
+//    while (true)
+//    {
+//        int socket = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+//        //threadsList.push_back(0);
+//        int idWatku;
+//        idWatku = pthread_create(&threads[numThread++], NULL, serveConnection, &socket);
+//        printf("idWatku: %d \n", idWatku);
+//    }
     while (true)
     {
         int socket = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-        //threadsList.push_back(0);
-        int idWatku;
-        idWatku = pthread_create(&threads[numThread++], NULL, serveConnection, &socket);
-        printf("idWatku: %d \n", idWatku);
+
+        if(fork() == 0)
+        {
+            close(sockfd);
+            serveConnection((void *)&socket);
+            exit(0);
+        }
+        close(socket);
     }
+
     return NULL;
 }
 
